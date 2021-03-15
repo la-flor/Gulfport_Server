@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="content-section">
+
+    <form method="POST" action="/reset_password">
+
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+
+            {{ field(placeholder=field.label.text, class="form-control") }}
+
+            {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+            <br>
+        {% endfor %}
+
+        <input type="submit" class="btn btn-info" value="Request Password Change">
+    </form>
+
+</div>
+
+{% endblock %}
