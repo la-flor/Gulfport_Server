@@ -6,10 +6,6 @@ from models import User
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[InputRequired(), Length(min=6, max=25)])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=25)])
-    
-class CreateUserForm(FlaskForm):
-    email = StringField('Email', validators=[InputRequired(), Length(min=6, max=25)])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=25)])
 
 class RequestResetForm(FlaskForm):
     email = StringField('Email',
