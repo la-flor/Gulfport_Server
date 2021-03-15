@@ -34,7 +34,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 toolbar = DebugToolbarExtension(app)
 
 from models import User, Event, EventModelView, UserModelView
-from forms import LoginForm, CreateUserForm, ResetPasswordForm, RequestResetForm
+from forms import LoginForm, ResetPasswordForm, RequestResetForm
 
 
 # instatiate and create admin view to edit events database table
@@ -56,7 +56,7 @@ def load_user(user_id):
 
 # GET request returns login page with login
 # POST request authenticates user and redirects to admin page
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/admin/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         flash("You're already logged in.  You may logout or use the links on the toolbar to navigate.", 'info')
@@ -75,11 +75,11 @@ def login():
             return redirect("/admin")
         except:
             flash("Invalid login attempt.", 'danger')
-            return redirect('/login')
+            return redirect('/admin/login')
 
     return render_template('login.html', title="Login Page", form=form)
 
-@app.route("/logout")
+@app.route("/admin/logout")
 def logout():
     if current_user.is_authenticated:
         logout_user()
@@ -99,7 +99,7 @@ def send_reset_email(user):
                     If you did not make this request then simply ignore this email and no changes will be made.'''
     mail.send(msg)
 
-@app.route("/reset_password", methods=['GET', 'POST'])
+@app.route("/admin/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
         return redirect('/admin')
@@ -112,13 +112,13 @@ def reset_request():
             if user:    
                 send_reset_email(user)
             flash('An email has been sent with instructions to reset your password.', 'success')
-            return redirect('/login')
+            return redirect('/admin/login')
         except:
             flash("An error occured.  Please contact our dev team.", "danger")
 
     return render_template('request_reset.html', title='Reset Password', form=form)
 
-@app.route("/reset_password/<token>", methods=['GET', 'POST'])
+@app.route("/admin/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
     if current_user.is_authenticated:
         return redirect('/admin')
@@ -126,17 +126,17 @@ def reset_token(token):
     user = User.verify_reset_token(token)
     if user is None:
         flash('That is an invalid or expired token', 'danger')
-        return redirect('/reset_password')
+        return redirect('admin/reset_password')
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
         try:
             User.change_password(user, form.password.data)
             flash('Your password has been updated.', 'success')
-            return redirect('/login')
+            return redirect('/admin/login')
         except:
             flash('We were unable to update your password.  Please contact our dev team for further assistence.', 'danger')
-            return redirect('/reset_password')
+            return redirect('admin/reset_password')
 
     return render_template('reset_token.html', title='Reset Password', form=form, token=token)
 

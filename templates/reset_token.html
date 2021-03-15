@@ -5,7 +5,7 @@
 
 <div class="content-section">
 
-    <form method="POST" action="/reset_password/{{ token }}">
+    <form method="POST" action="/admin/reset_password/{{ token }}">
 
         {{ form.hidden_tag() }}
         {{ form.csrf_token }}
