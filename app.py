@@ -38,7 +38,7 @@ from forms import LoginForm, ResetPasswordForm, RequestResetForm
 
 
 # instatiate and create admin view to edit events database table
-admin = Admin(app)
+admin = Admin(app, name="GulfportVotes Admin")
 admin.add_view(EventModelView(Event, db.session))
 admin.add_view(UserModelView(User, db.session))
 
@@ -53,6 +53,10 @@ def load_user(user_id):
         return User.query.get(user_id)
     except:
         return None
+
+@app.route('/')
+def home():
+    return redirect('/admin')
 
 # GET request returns login page with login
 # POST request authenticates user and redirects to admin page
